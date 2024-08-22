@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useFormValues } from '../../hooks/useFormValues';
 
 const CropFormPage = () => {
   const { formValues, setFormValues } = useFormValues();
-  const [categories, setCategories] = React.useState([]);
+  const [categories, setCategories] = useState([]);
+  const [quantityError, setQuantityError] = useState('');
+  const [costError, setCostError] = useState('');
   const formRef = useRef(null);
 
   const resultJSON = localStorage.getItem("user");  
@@ -40,20 +42,46 @@ const CropFormPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'quantity') {
+      if (value === '') {
+        setQuantityError(''); 
+      } else if (value < 1) {
+        setQuantityError("Quantity can't be less than 1");
+        
+      }else if (isNaN(value)) {
+        setCostError("Enter a valid cost");
+      } 
+      else {
+        setQuantityError('');
+      }
+    }
+
+    if (name === 'price') {
+      if (value === '') {
+        setCostError(''); // Clear the error if input is empty
+      } else if (value < 10) {
+        setCostError("Cost can't be less than 10");
+      } else if (isNaN(value)) {
+        setCostError("Enter a valid cost");
+      } else {
+        setCostError('');
+      }
+    }
+
     setFormValues({ ...formValues, [name]: value });
-  };
+};
+
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-    if (!formValues.cropName || !formValues.price || !formValues.quantity || !formValues.categoryId) {
-
+    if (!formValues.cropName || !formValues.price || !formValues.quantity || !formValues.categoryId || quantityError || costError) {
       return;
     }
     try {
       const payload = {
         ...formValues,
-        imageUrl: formValues.imageUrl || 'default-image-url',
+        imageUrl: formValues.imageUrl || null,
       };
       if (formValues.id === null) {
         await axios.post('/api/crops', payload);
@@ -61,7 +89,7 @@ const CropFormPage = () => {
         await axios.put(`/api/crops/${formValues.id}`, payload);
       }
       resetForm();
-      window.alert("Crop added successfully!")
+      window.alert("Crop added successfully!");
 
     } catch (error) {
       console.error('Error saving crop:', error);
@@ -108,6 +136,7 @@ const CropFormPage = () => {
               onChange={handleInputChange}
               required
             />
+            {costError && <div className="text-danger">{costError}</div>}
           </div>
           <div className="mb-3">
             <label htmlFor="imageUrl" className="form-label">Image URL</label>
@@ -131,6 +160,7 @@ const CropFormPage = () => {
               onChange={handleInputChange}
               required
             />
+            {quantityError && <div className="text-danger">{quantityError}</div>}
           </div>
           <div className="mb-3">
             <label htmlFor="categoryId" className="form-label">Category <span className="text-red-500">*</span></label>
@@ -151,7 +181,7 @@ const CropFormPage = () => {
             </select>
           </div>
           <div className="mb-3">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary" disabled={quantityError || costError}>
               Add
             </button>
           </div>
@@ -162,4 +192,3 @@ const CropFormPage = () => {
 };
 
 export default CropFormPage;
-

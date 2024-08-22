@@ -53,6 +53,7 @@ const useAuth = () => {
     const userData = {
       firstName: formData.firstName,
       lastName: formData.lastName,
+      aadhaarNo:formData.aadhaarNo,
       addressDTO: {
         addressLine1: formData.addressDTO.addressLine1,
         addressLine2: formData.addressDTO.addressLine2,

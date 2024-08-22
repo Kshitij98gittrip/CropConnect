@@ -78,6 +78,7 @@ public class FarmerServiceImpl implements FarmerService {
     	user = userRepository.save(user);
     	
         Farmer farmer = modelMapper.map(farmerDto, Farmer.class);
+        farmer.setAadhaarNo(farmerDto.getAadhaarNo());
         farmer.setAddress(address);
         farmer.setUser(user);
         

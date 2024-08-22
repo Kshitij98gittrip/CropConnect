@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -15,27 +16,31 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
-public class Person extends BaseEntity{
-	
-	 @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "user_id")
-	    private User user;
+public class Person extends BaseEntity {
 
-	    @OneToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "address_id")
-	    private Address address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	    @Size(max = 50)
-	    @NotNull
-	    @Column(name = "first_name", nullable = false, length = 50)
-	    private String firstName;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
-	    @Size(max = 50)
-	    @NotNull
-	    @Column(name = "last_name", nullable = false, length = 50)
-	    private String lastName;
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
 
-	    @Column(name = "rating")
-	    private Integer rating;
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
 
+    @Column(name = "rating")
+    private Integer rating;
+
+    @Column(name = "aadhaar_no")
+    @NotNull
+    @Pattern(regexp = "\\d{12}", message = "Aadhaar number must be 12 digits")
+    private String aadhaarNo;
 }

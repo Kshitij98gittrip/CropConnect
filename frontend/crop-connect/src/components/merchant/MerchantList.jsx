@@ -90,7 +90,8 @@ const MerchantList = ({searchQuery}) => {
             price={crop.price}     // Price of the crop
             qty={crop.quantity}   // Display quantity (or use differently if needed)
             ctg={crop.categoryName}  // Display category name
-            reviews={crop.farmerName}  // Farmer's name
+            farmerName={crop.farmerName}
+            id = {crop.id}  // Farmer's name
           />
         ))
       ) : (

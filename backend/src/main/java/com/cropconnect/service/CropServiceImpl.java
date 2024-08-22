@@ -120,21 +120,27 @@ public class CropServiceImpl implements CropService {
 	}
 	
 	@Override
-    public List<CropDTO> getCropsOfFarmer(Integer farmerId) {
-        // Fetch the Farmer entity (optional, depending on how you handle farmers)
-        Farmer farmer = farmerRepository.findById(farmerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Farmer not found !!"));
-        
-        // Fetch the list of crops for the farmer
-        List<Crop> crops = cropRepository.findByFarmer(farmer);
-        
-        // Convert Crop entities to CropDTOs
-        List<CropDTO> cropDtos = crops.stream()
-                .map(crop -> modelMapper.map(crop, CropDTO.class))
-                .collect(Collectors.toList());
+	public List<CropDTO> getCropsOfFarmer(Integer farmerId) {
+	    // Fetch the Farmer entity
+	    Farmer farmer = farmerRepository.findById(farmerId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Farmer not found !!"));
+	    
+	    // Fetch the list of crops for the farmer
+	    List<Crop> crops = cropRepository.findByFarmer(farmer);
+	    
+	    // Convert Crop entities to CropDTOs
+	    List<CropDTO> cropDtos = crops.stream()
+	            .map(crop -> {
+	                CropDTO cropDto = modelMapper.map(crop, CropDTO.class);
+	                cropDto.setCategoryId(crop.getCategory().getId()); // Set the categoryId
+	                cropDto.setFarmerId(farmerId);
+	                return cropDto;
+	            })
+	            .toList();
 
-        return cropDtos;
-    }
+	    return cropDtos;
+	}
+
 
 	@Override
 	public List<CropDTO> getAllCropsSortedAsc(String sortBy) {

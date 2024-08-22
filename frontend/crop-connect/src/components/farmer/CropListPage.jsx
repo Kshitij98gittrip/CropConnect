@@ -66,10 +66,13 @@ const CropListPage = () => {
     
 
     const fetchCategoryNames = async (cropData) => {
+      
       const categoryMap = {};
       for (const crop of cropData) {
         try {
+          
           const response = await axios.get(`/api/categories/${crop.categoryId}`);
+          console.log("Category data -------->",response.data)
           categoryMap[crop.categoryId] = response.data.categoryName;
         } catch (error) {
           console.error(`Error fetching category for ID ${crop.categoryId}:`, error);
